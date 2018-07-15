@@ -5,6 +5,7 @@
         <tr>
             <th>ID</th>
             <th>标题</th>
+            <th>LOGO</th>
             <th>作者</th>
             <th>操作</th>
         </tr>
@@ -12,9 +13,10 @@
             <tr>
                 <td>{{ $article->id }}</td>
                 <td>{{ $article->title }}</td>
-                <td>{{ $article->student->name }}</td>
+                <td><img src="{{ $article->logo() }}" /></td>
+                <td>{{ $article->author_name() }}</td>
                 <td>
-                    <a href="{{ route('articles.show',['article'=>$article->id]) }}">查看</a>
+                    <a href="{{ url("/articles",[$article->id]) }}">查看</a>
                     <a href="{{ route('articles.edit',[$article]) }}">编辑</a>
                     <form method="post" action="{{ route('articles.destroy',[$article]) }}">
                         {{ method_field('DELETE') }}

@@ -3,42 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 
 class ArticleController extends Controller
 {
     //文章列表
     public function index()
     {
-        $articles = Article::paginate(5);
+        //dd(storage_path());
+        //dd(url()->current());
+        //dd(action('DbController@index'));
+        $articles = Article::where('title','like','%西游%')->paginate(1);
         return view('article/index',compact('articles'));
     }
     //添加文章
     public function create()
     {
-        return view('article/create');
+        $students = Student::all();
+        return view('article/create',compact('students'));
     }
 
     public function store(Request $request)
     {
+        //return back()->withInput();
         //数据验证
         $this->validate($request,[
             'title'=>'required|max:10',
-            'content'=>'required'
+            'content'=>'required',
+            //验证码
+            'captcha'=>'required|captcha'
+
         ],[
             'title.required'=>'标题不能为空',
             'title.max'=>'标题不能超过10个字',
             'content.required'=>'内容不能为空',
+            'captcha.required'=>'验证码未填写',
+            'captcha.captcha'=>'验证码不正确',
         ]);
         //var_dump($request->input());
+        //处理上传文件
+        $file = $request->logo;
+        $fileName = $file->store('public/logo');
+
         $model = Article::create([
             'title'=>$request->title,
-            'content'=>$request->input('content')
+            'author_id'=>$request->author_id,
+            'content'=>$request->input('content'),
+            'logo'=>$fileName
         ]);
         //var_dump($model);
         //设置提示信息
-        session()->flash('success','添加成功');
-        return redirect()->route('articles.index');
+        //session()->flash('success','添加成功');
+        return redirect()->route('articles.index')->with('success','添加成功');
     }
     //查看用户信息
     public function show(Article $article,Request $request)//依赖注入
@@ -48,7 +66,8 @@ class ArticleController extends Controller
     //修改文章
     public function edit(Article $article)
     {
-        return view('article/edit',compact('article'));
+        $students = Student::all();
+        return view('article/edit',compact('article','students'));
     }
 
     public function update(Article $article,Request $request)
@@ -64,7 +83,7 @@ class ArticleController extends Controller
         ]);
         $article->update([
             'title'=>$request->title,
-            'content'=>$request->content
+            'content'=>$request->input('content')
         ]);
         //var_dump($model);
         //设置提示信息

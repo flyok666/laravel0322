@@ -10,6 +10,14 @@
                    value="@if(old('title')){{ old('title') }}@else{{ $article->title }}@endif" />
         </div>
         <div class="form-group">
+            <label>作者</label>
+            <select class="form-control">
+                @foreach($students as $student)
+                    <option value="{{ $student->id }}" @if($article->author_id==$student->id)selected="selected"@endif>{{ $student->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
             <label>内容</label>
             <textarea name="content" class="form-control" rows="3">{{ $article->content }}</textarea>
         </div>
