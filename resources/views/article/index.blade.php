@@ -27,6 +27,6 @@
             </tr>
         @endforeach
     </table>
-    {{ $articles/*->appends(['keyword'=>'水浒'])*/->links() }}
+    {{ $articles->appends(['keyword'=>$keyword])->links() }}
 @endsection
 

@@ -3,7 +3,7 @@
 @section('contents')
     <h1>修改文章</h1>
     @include('_errors')
-    <form method="post" action="{{ route('articles.update',[$article]) }}">
+    <form method="post" action="{{ route('articles.update',[$article]) }}" enctype="multipart/form-data">
         <div class="form-group">
             <label>标题</label>
             <input type="text" name="title" class="form-control"
@@ -16,6 +16,11 @@
                     <option value="{{ $student->id }}" @if($article->author_id==$student->id)selected="selected"@endif>{{ $student->name }}</option>
                 @endforeach
             </select>
+        </div>
+        <div class="form-group">
+            <label>LOGO</label>
+            <input type="file" name="logo">
+            <img src="{{ $article->logo() }}">
         </div>
         <div class="form-group">
             <label>内容</label>
